@@ -12,9 +12,15 @@ model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
   name  String?
+  role  Role    @default(USER)
   password  String
   createdAt DateTime @default(now())
   posts Post[]
+}
+
+enum Role {
+  USER
+  ADMIN
 }
 
 model Post {
