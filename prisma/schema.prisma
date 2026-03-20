@@ -8,6 +8,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum BannerType{
+  HOME
+  PROMOTION
+  CATEGORY
+}
+enum ImageType{
+  FOOD
+  DRINK
+  OTHER
+}
 model User {
   id    Int     @id @default(autoincrement())
   email String  @unique
@@ -16,6 +26,7 @@ model User {
   password  String
   createdAt DateTime @default(now())
   posts Post[]
+  ratings  Rating[]
 }
 
 enum Role {
@@ -31,3 +42,60 @@ model Post {
   author    User    @relation(fields: [authorId], references: [id])
   authorId  Int
 }
+
+model Product{
+  id    Int     @id @default(autoincrement())
+  name  String
+  ratingAvg Float @default(0)
+  ratingCount Int @default(0)
+  description String?
+  price Float
+  ratings Rating[]
+  images ProductImage[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Rating {
+  id        Int @id @default(autoincrement())
+
+  star      Int
+
+  productId Int
+  userId    Int
+  parentId  Int?
+
+  product   Product @relation(fields: [productId], references: [id])
+  user      User    @relation(fields: [userId], references: [id])
+
+  parent    Rating?  @relation("RatingReplies", fields: [parentId], references: [id])
+  replies   Rating[] @relation("RatingReplies")
+
+  @@unique([productId, userId])
+  @@index([productId])
+  @@index([userId])
+  @@index([parentId])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductImage{
+  id    Int     @id @default(autoincrement())
+  url String
+  type ImageType @default(FOOD)
+  productId Int
+  product Product @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Banner {
+  id        Int      @id @default(autoincrement())
+  image     String
+  link      String?
+  type      BannerType @default(HOME)
+
+  createdAt DateTime @default(now())
+}
+
