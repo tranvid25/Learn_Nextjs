@@ -9,7 +9,9 @@ export class UserUseCase {
   constructor(private readonly userService: UserService) {}
 
   async createUser(createUserDto: CreateUserDto) {
-    const existingUser = await this.userService.findByEmail(createUserDto.email);
+    const existingUser = await this.userService.findByEmail(
+      createUserDto.email,
+    );
     if (existingUser) {
       throw new ConflictException('Email already exists');
     }

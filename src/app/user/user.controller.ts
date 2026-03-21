@@ -55,7 +55,7 @@ export class UserController {
   async update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateUserDto,
-    @GetUser() currentUser: any,
+    @GetUser() currentUser: { id: number },
   ) {
     // Only the profile owner can update their own data
     if (currentUser.id !== id) {
