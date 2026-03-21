@@ -60,9 +60,8 @@ model Product{
 
 model Rating {
   id        Int @id @default(autoincrement())
-
   star      Int
-
+  comment   String?
   productId Int
   userId    Int
   parentId  Int?
@@ -73,7 +72,6 @@ model Rating {
   parent    Rating?  @relation("RatingReplies", fields: [parentId], references: [id])
   replies   Rating[] @relation("RatingReplies")
 
-  @@unique([productId, userId])
   @@index([productId])
   @@index([userId])
   @@index([parentId])
