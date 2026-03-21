@@ -59,11 +59,7 @@ export class ProductUseCase {
         'fastfood/products',
       );
       for (const res of uploadResults) {
-        await this.productService.addImage(
-          id,
-          res.secure_url,
-          res.public_id,
-        );
+        await this.productService.addImage(id, res.secure_url, res.public_id);
       }
     }
 

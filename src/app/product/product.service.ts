@@ -86,6 +86,7 @@ export class ProductService {
       }[];
     },
   ) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { images, categoryIds, ...productData } = data;
     return this.prisma.product.update({
       where: { id },

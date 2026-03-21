@@ -33,7 +33,6 @@ export class CreateProductDto {
   @IsNotEmpty()
   @IsEnum(ProductType)
   type: ProductType;
-
   @ApiPropertyOptional({
     type: 'array',
     items: {
@@ -50,7 +49,7 @@ export class CreateProductDto {
   @Transform(({ value }) => {
     if (typeof value === 'string') return value.split(',').map(Number);
     if (Array.isArray(value)) return value.map(Number);
-    return value;
+    return value as unknown;
   })
   @IsNumber({}, { each: true })
   categoryIds?: number[];
