@@ -13,7 +13,7 @@ enum BannerType{
   PROMOTION
   CATEGORY
 }
-enum ImageType{
+enum ProductType{
   FOOD
   DRINK
   OTHER
@@ -46,12 +46,14 @@ model Post {
 model Product{
   id    Int     @id @default(autoincrement())
   name  String
+  type  ProductType @default(FOOD)
   ratingAvg Float @default(0)
   ratingCount Int @default(0)
   description String?
   price Float
   ratings Rating[]
   images ProductImage[]
+  categories ProductCategory[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -83,7 +85,7 @@ model Rating {
 model ProductImage{
   id    Int     @id @default(autoincrement())
   url String
-  type ImageType @default(FOOD)
+  publicId String @default("")
   productId Int
   product Product @relation(fields: [productId], references: [id])
   createdAt DateTime @default(now())
@@ -97,5 +99,25 @@ model Banner {
   type      BannerType @default(HOME)
 
   createdAt DateTime @default(now())
+}
+
+model Category{
+  id    Int     @id @default(autoincrement())
+  name  String
+  products ProductCategory[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ProductCategory{
+  id    Int     @id @default(autoincrement())
+  productId Int
+  categoryId Int
+  product Product @relation(fields: [productId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([productId])
+  @@index([categoryId])
 }
 
