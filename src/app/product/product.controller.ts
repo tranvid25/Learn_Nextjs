@@ -10,6 +10,7 @@ import {
   UseGuards,
   UseInterceptors,
   UploadedFiles,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -17,6 +18,7 @@ import {
   ApiBearerAuth,
   ApiConsumes,
   ApiBody,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ProductUseCase } from './usecase/product.usecase';
@@ -59,6 +61,33 @@ export class ProductController {
   async findAll() {
     const data = await this.productUseCase.getAllProducts();
     return ApiResponse.ok(data, 'Products retrieved successfully');
+  }
+
+  @Get('search')
+  @Public()
+  @ApiOperation({ summary: 'Search products by text using Elasticsearch' })
+  @ApiQuery({
+    name: 'q',
+    required: true,
+    type: String,
+    description: 'Search query text',
+  })
+  async search(@Query('q') q: string) {
+    if (!q) {
+      return ApiResponse.ok([], 'Empty search query');
+    }
+    const data = await this.productUseCase.searchProducts(q);
+    return ApiResponse.ok(data, 'Products found');
+  }
+
+  @Get('sync')
+  @Roles(Role.ADMIN)
+  @ApiOperation({
+    summary: 'Sync all DB products to Elasticsearch index (Admin only)',
+  })
+  async syncToElastic() {
+    const result = await this.productUseCase.syncAllToElastic();
+    return ApiResponse.ok(result, `Synced ${result.indexed}/${result.total} products to Elasticsearch`);
   }
 
   @Get(':id')
