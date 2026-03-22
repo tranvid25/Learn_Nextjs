@@ -49,6 +49,25 @@ export class ProductService {
     });
   }
 
+  async findByIds(ids: number[]) {
+    const products = await this.prisma.product.findMany({
+      where: { id: { in: ids } },
+      include: {
+        images: true,
+        categories: { include: { category: true } },
+        ratings: {
+          include: {
+            user: { select: { name: true, email: true } },
+          },
+        },
+      },
+    });
+
+    // Sort to match the order of IDs from Elasticsearch
+    const productMap = new Map(products.map((p) => [p.id, p]));
+    return ids.map((id) => productMap.get(id)).filter(Boolean);
+  }
+
   async findById(id: number) {
     const product = await this.prisma.product.findUnique({
       where: { id },

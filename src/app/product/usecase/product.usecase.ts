@@ -3,11 +3,14 @@ import { ProductService } from '../product.service';
 import { CreateProductDto } from '../dto/create-product.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
 import { CloudinaryService } from 'src/infra/cloudinary/cloudinary.service';
+import { SearchService } from 'src/infra/search/search.service';
+
 @Injectable()
 export class ProductUseCase {
   constructor(
     private readonly productService: ProductService,
     private readonly cloudinary: CloudinaryService,
+    private readonly searchService: SearchService,
   ) {}
 
   async createProduct(
@@ -30,10 +33,15 @@ export class ProductUseCase {
     }
 
     // 2. Create product in DB
-    return this.productService.create({
+    const product = await this.productService.create({
       ...createProductDto,
       images: images.length > 0 ? images : undefined,
     });
+
+    // 3. Index product in Elasticsearch
+    await this.searchService.indexProduct(product);
+
+    return product;
   }
 
   async getAllProducts() {
@@ -64,7 +72,12 @@ export class ProductUseCase {
     }
 
     // Update product info
-    return this.productService.update(id, updateProductDto);
+    const updatedProduct = await this.productService.update(id, updateProductDto);
+
+    // Update in Elasticsearch
+    await this.searchService.updateProduct(updatedProduct);
+
+    return updatedProduct;
   }
 
   async deleteProductImage(imageId: number) {
@@ -98,6 +111,29 @@ export class ProductUseCase {
       }
     }
 
+    // Delete from Elasticsearch
+    await this.searchService.removeProduct(id);
+
     return this.productService.remove(id);
+  }
+
+  async searchProducts(text: string) {
+    const ids = await this.searchService.searchProducts(text);
+    if (!ids || ids.length === 0) {
+      return [];
+    }
+    // Fetch from DB including images and ratings
+    return this.productService.findByIds(ids);
+  }
+
+  async syncAllToElastic() {
+    // Get all products from DB (basic fields are enough for indexing)
+    const products = await this.productService.findAll();
+    let indexed = 0;
+    for (const product of products) {
+      await this.searchService.indexProduct(product);
+      indexed++;
+    }
+    return { indexed, total: products.length };
   }
 }
