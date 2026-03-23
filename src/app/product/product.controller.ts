@@ -87,7 +87,10 @@ export class ProductController {
   })
   async syncToElastic() {
     const result = await this.productUseCase.syncAllToElastic();
-    return ApiResponse.ok(result, `Synced ${result.indexed}/${result.total} products to Elasticsearch`);
+    return ApiResponse.ok(
+      result,
+      `Synced ${result.indexed}/${result.total} products to Elasticsearch`,
+    );
   }
 
   @Get(':id')

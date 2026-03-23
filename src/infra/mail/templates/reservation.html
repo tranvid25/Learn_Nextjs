@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reservation Confirmation</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f4f4; margin:0; padding:0; }
+    .container { max-width:600px; margin:40px auto; background:#fff; border-radius:8px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,.1); }
+    .header { background:#d4a853; padding:30px; text-align:center; color:#fff; }
+    .header h1 { margin:0; font-size:24px; }
+    .body { padding:32px; color:#333; line-height:1.7; }
+    .body h2 { color:#d4a853; }
+    table { width:100%; border-collapse:collapse; margin:20px 0; }
+    td { padding:10px 14px; border-bottom:1px solid #eee; }
+    td:first-child { font-weight:bold; color:#555; width:40%; }
+    .footer { background:#f8f8f8; padding:20px; text-align:center; font-size:13px; color:#999; border-top:1px solid #eee; }
+    .badge { display:inline-block; background:#d4a853; color:#fff; padding:6px 18px; border-radius:20px; font-size:13px; margin-top:16px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🍽️ Reservation Confirmed</h1>
+    </div>
+    <div class="body">
+      <p>Xin chào <strong>{{name}}</strong>,</p>
+      <p>Chúng tôi đã nhận được yêu cầu đặt bàn của bạn. Dưới đây là thông tin chi tiết:</p>
+
+      <table>
+        <tr><td>👤 Họ tên</td><td>{{name}}</td></tr>
+        <tr><td>📧 Email</td><td>{{email}}</td></tr>
+        <tr><td>📞 Số điện thoại</td><td>{{phone}}</td></tr>
+        <tr><td>📅 Ngày & Giờ</td><td>{{datetime}}</td></tr>
+        <tr><td>👥 Số khách</td><td>{{party}} người</td></tr>
+        <tr><td>💬 Ghi chú</td><td>{{message}}</td></tr>
+      </table>
+
+      <p>Nếu bạn có bất kỳ thay đổi nào, vui lòng liên hệ chúng tôi sớm nhất có thể.</p>
+      <p>Chúng tôi rất mong được phục vụ bạn! 🙏</p>
+      <span class="badge">{{fromName}}</span>
+    </div>
+    <div class="footer">
+      © 2026 {{fromName}} — Email này được gửi tự động, xin đừng reply.
+    </div>
+  </div>
+</body>
+</html>
