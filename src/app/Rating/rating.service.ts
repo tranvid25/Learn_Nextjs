@@ -5,13 +5,13 @@ import { PrismaService } from 'src/infra/database/prisma.service';
 export class RatingService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data:{
+  async create(data: {
     productId: number;
     userId: number;
     parentId?: number | null;
     star: number;
     comment?: string | null;
-  }){
+  }) {
     const rating = await this.prisma.rating.create({
       data,
     });
@@ -20,20 +20,20 @@ export class RatingService {
     }
     return rating;
   }
-  async findAll(){
+  async findAll() {
     return this.prisma.rating.findMany({
-      include:{
-        user:{
-          select:{
-            id:true,
-            name:true,
-            email:true,
-          }
-        }
-      }
-    })
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
   }
-  async findById(id: number){
+  async findById(id: number) {
     return this.prisma.rating.findUnique({
       where: { id },
       include: {
@@ -41,7 +41,7 @@ export class RatingService {
       },
     });
   }
-  async findParentByProductAndUser(productId: number, userId: number){
+  async findParentByProductAndUser(productId: number, userId: number) {
     return this.prisma.rating.findFirst({
       where: {
         productId,
@@ -50,9 +50,9 @@ export class RatingService {
       },
     });
   }
-  async findAllByProduct(productId: number){
+  async findAllByProduct(productId: number) {
     return this.prisma.rating.findMany({
-      where: { 
+      where: {
         productId,
         parentId: null, // Top level comments
       },
@@ -67,10 +67,13 @@ export class RatingService {
       orderBy: { createdAt: 'desc' },
     });
   }
-  async update(id: number, data: {
-    star?: number;
-    comment?: string | null;
-  }){
+  async update(
+    id: number,
+    data: {
+      star?: number;
+      comment?: string | null;
+    },
+  ) {
     const rating = await this.prisma.rating.update({
       where: { id },
       data,
@@ -80,7 +83,7 @@ export class RatingService {
     }
     return rating;
   }
-  async delete(id: number){
+  async delete(id: number) {
     const rating = await this.prisma.rating.delete({
       where: { id },
     });
@@ -89,7 +92,7 @@ export class RatingService {
     }
     return rating;
   }
-  async updateProductRatingStats(productId: number){
+  async updateProductRatingStats(productId: number) {
     const agg = await this.prisma.rating.aggregate({
       where: { productId, parentId: null }, // Only parent ratings affect stats
       _avg: { star: true },

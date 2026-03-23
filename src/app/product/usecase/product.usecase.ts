@@ -72,7 +72,10 @@ export class ProductUseCase {
     }
 
     // Update product info
-    const updatedProduct = await this.productService.update(id, updateProductDto);
+    const updatedProduct = await this.productService.update(
+      id,
+      updateProductDto,
+    );
 
     // Update in Elasticsearch
     await this.searchService.updateProduct(updatedProduct);

@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
@@ -26,7 +36,9 @@ export class RatingController {
 
   @Get('product/:productId')
   @Roles(Role.USER, Role.ADMIN)
-  @ApiOperation({ summary: 'Get all ratings for a given product (includes replies)' })
+  @ApiOperation({
+    summary: 'Get all ratings for a given product (includes replies)',
+  })
   async findByProduct(@Param('productId', ParseIntPipe) productId: number) {
     const data = await this.ratingUseCase.getRatingsByProduct(productId);
     return ApiResponse.ok(data, 'Product ratings retrieved successfully');
@@ -59,4 +71,3 @@ export class RatingController {
     return ApiResponse.ok(null, 'Rating deleted successfully');
   }
 }
-

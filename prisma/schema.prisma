@@ -119,3 +119,15 @@ model ProductCategory{
   @@index([categoryId])
 }
 
+model Reverse{
+  id    Int   @id @default(autoincrement())
+  name String
+  email String
+  phone String
+  datetime DateTime
+  party Int
+  message String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+

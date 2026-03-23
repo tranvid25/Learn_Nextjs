@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { RatingService } from '../rating.service';
 import { PrismaService } from 'src/infra/database/prisma.service';
 import { CreateRatingDto } from '../dto/create-rating.dto';
@@ -30,16 +34,21 @@ export class RatingUseCase {
         throw new NotFoundException(RATING_ERROR_MESSAGES.PARENT_NOT_FOUND);
       }
       if (parent.productId !== productId) {
-        throw new BadRequestException('Parent rating must belong to the same product');
+        throw new BadRequestException(
+          'Parent rating must belong to the same product',
+        );
       }
     }
 
     // 3. Prevent duplicate parent ratings per user (allow multiple replies)
     if (!parentId) {
       if (typeof star !== 'number') {
-        throw new BadRequestException('Star rating is required for product reviews');
+        throw new BadRequestException(
+          'Star rating is required for product reviews',
+        );
       }
-      const existingParent = await this.ratingService.findParentByProductAndUser(productId, userId);
+      const existingParent =
+        await this.ratingService.findParentByProductAndUser(productId, userId);
       if (existingParent) {
         throw new BadRequestException(RATING_ERROR_MESSAGES.ALREADY_RATED);
       }
