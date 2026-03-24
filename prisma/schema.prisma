@@ -35,12 +35,18 @@ enum Role {
 }
 
 model Post {
-  id        Int     @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   title     String
-  content   String?
-  published Boolean @default(false)
-  author    User    @relation(fields: [authorId], references: [id])
+  slug      String   @unique
+  content   String
+  image     String?
+  status    String   @default("draft")
   authorId  Int
+  author    User     @relation(fields: [authorId], references: [id])
+  categories PostCategory[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
 }
 
 model Product{
@@ -103,6 +109,7 @@ model Category{
   id    Int     @id @default(autoincrement())
   name  String
   products ProductCategory[]
+  posts PostCategory[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -129,5 +136,16 @@ model Reverse{
   message String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+model PostCategory{
+  id    Int     @id @default(autoincrement())
+  postId Int
+  categoryId Int
+  post Post @relation(fields: [postId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@index([postId])
+  @@index([categoryId])
 }
 

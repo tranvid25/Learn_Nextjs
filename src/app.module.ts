@@ -8,6 +8,7 @@ import { CategoryModule } from './app/category/category.module';
 import { SearchModule } from './infra/search/search.module';
 import { MailModule } from './infra/mail/mail.module';
 import { ReverseModule } from './app/Reverse/reverse.module';
+import { PostModule } from './app/post/post.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ReverseModule } from './app/Reverse/reverse.module';
     SearchModule,
     MailModule,
     ReverseModule,
+    PostModule,
   ],
 })
 export class AppModule {}
