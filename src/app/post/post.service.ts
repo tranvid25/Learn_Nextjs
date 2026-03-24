@@ -11,12 +11,12 @@ export class PostService {
       data: {
         ...data,
         categories: {
-          create: categoryIds?.map(id => ({ categoryId: id })) || []
-        }
+          create: categoryIds?.map((id) => ({ categoryId: id })) || [],
+        },
       },
-      include: { 
+      include: {
         author: { select: { id: true, name: true, email: true } },
-        categories: { include: { category: true } }
+        categories: { include: { category: true } },
       },
     });
   }
@@ -24,6 +24,17 @@ export class PostService {
   async findAll() {
     return this.prisma.post.findMany({
       where: { deletedAt: null },
+      include: {
+        author: { select: { id: true, name: true, email: true } },
+        categories: { include: { category: true } },
+      },
+    });
+  }
+
+  async search(query: any) {
+    const { search } = query;
+    return this.prisma.post.findMany({
+      where: { deletedAt: null, title: { contains: search } },
       include: {
         author: { select: { id: true, name: true, email: true } },
         categories: { include: { category: true } },
@@ -45,17 +56,24 @@ export class PostService {
     return post;
   }
 
-  async update(id: number, data: Prisma.PostUncheckedUpdateInput, categoryIds?: number[]) {
+  async update(
+    id: number,
+    data: Prisma.PostUncheckedUpdateInput,
+    categoryIds?: number[],
+  ) {
     return this.prisma.post.update({
       where: { id },
       data: {
         ...data,
-        ...(categoryIds !== undefined && { // Check if categoryIds is explicitly provided
+        ...(categoryIds !== undefined && {
+          // Check if categoryIds is explicitly provided
           categories: {
             deleteMany: {}, // Disconnect all existing categories
-            create: categoryIds.map(categoryId => ({ categoryId: categoryId })) // Connect new categories
-          }
-        })
+            create: categoryIds.map((categoryId) => ({
+              categoryId: categoryId,
+            })), // Connect new categories
+          },
+        }),
       },
     });
   }

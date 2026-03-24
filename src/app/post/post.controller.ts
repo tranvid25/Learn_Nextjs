@@ -10,6 +10,7 @@ import {
   UseInterceptors,
   UploadedFile,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -62,6 +63,13 @@ export class PostController {
   @ApiOperation({ summary: 'Get all posts' })
   async findAll() {
     const data = await this.postUseCase.getAllPosts();
+    return ApiResponse.ok(data, 'Posts retrieved successfully');
+  }
+  @Public()
+  @Get('search')
+  @ApiOperation({ summary: 'Search posts' })
+  async search(@Query() query: any) {
+    const data = await this.postUseCase.search(query);
     return ApiResponse.ok(data, 'Posts retrieved successfully');
   }
 
