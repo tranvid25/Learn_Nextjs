@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Xác nhận Đơn Hàng</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+  <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+    <h2>Xin chào {{name}},</h2>
+    <p>Cảm ơn bạn đã đặt hàng tại {{fromName}}.</p>
+    <p>Đơn hàng của bạn đã được tiếp nhận và xử lý thành công.</p>
+    
+    <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+      <h3 style="margin-top: 0;">Thông tin đơn hàng</h3>
+      <ul style="list-style: none; padding: 0;">
+        <li><strong>Mã đơn hàng:</strong> {{orderCode}}</li>
+        <li><strong>Tổng tiền:</strong> ${{totalPrice}}</li>
+        <li><strong>Phương thức thanh toán:</strong> {{paymentMethod}}</li>
+      </ul>
+    </div>
+    
+    <p>Chúng tôi sẽ liên hệ lại với bạn trong thời gian sớm nhất.</p>
+    <p>Trân trọng,<br>{{fromName}}</p>
+  </div>
+</body>
+</html>

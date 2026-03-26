@@ -48,7 +48,7 @@ export class PostUseCase {
   async getAllPosts() {
     return this.postService.findAll();
   }
-  
+
   async search(query: any) {
     return this.postService.search(query);
   }

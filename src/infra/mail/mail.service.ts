@@ -1,8 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 export interface ReservationMailData {
   name: string;
@@ -13,10 +13,18 @@ export interface ReservationMailData {
   message?: string;
 }
 
+export interface OrderMailData {
+  name: string;
+  email: string;
+  orderCode: string;
+  totalPrice: number;
+  paymentMethod: string;
+}
+
 @Injectable()
 export class MailService {
   private readonly logger = new Logger(MailService.name);
-  private transporter: nodemailer.Transporter;
+  private readonly transporter: nodemailer.Transporter;
 
   constructor(private readonly config: ConfigService) {
     this.transporter = nodemailer.createTransport({
@@ -80,6 +88,33 @@ export class MailService {
         `Failed to send reservation email to ${data.email}`,
         error,
       );
+      throw error;
+    }
+  }
+
+  async sendOrderMail(data: OrderMailData): Promise<void> {
+    const fromName = this.config.get<string>('MAIL_FROM_NAME', 'Restaurant');
+    const fromAddress = this.config.getOrThrow<string>('MAIL_FROM_ADDRESS');
+
+    const html = this.renderTemplate('order', {
+      name: data.name,
+      email: data.email,
+      orderCode: data.orderCode,
+      totalPrice: data.totalPrice,
+      paymentMethod: data.paymentMethod,
+      fromName,
+    });
+
+    try {
+      await this.transporter.sendMail({
+        from: `"${fromName}" <${fromAddress}>`,
+        to: `"${data.name}" <${data.email}>`,
+        subject: `✅ Xác nhận đặt hàng thành công - ${data.orderCode}`,
+        html,
+      });
+      this.logger.log(`Order confirmation email sent to ${data.email}`);
+    } catch (error) {
+      this.logger.error(`Failed to send order email to ${data.email}`, error);
       throw error;
     }
   }
