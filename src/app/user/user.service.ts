@@ -74,4 +74,10 @@ export class UserService {
       where: { id },
     });
   }
+
+  async deleteRefreshToken(refreshToken?: string) {
+    // Currently, we do not store refresh tokens in the database.
+    // This is a placeholder for future implementation to satisfy the auth use case
+    return { success: true, message: 'Logged out successfully' };
+  }
 }

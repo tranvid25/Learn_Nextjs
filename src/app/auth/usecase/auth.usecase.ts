@@ -5,6 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from '../dto/login.dto';
 import { CreateUserDto } from '../../user/dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
+import { LogoutDto } from '../dto/logout.dto';
 
 @Injectable()
 export class AuthUseCase {
@@ -35,6 +36,7 @@ export class AuthUseCase {
     const payload = { sub: user.id, email: user.email, role: user.role };
     return {
       access_token: await this.jwtService.signAsync(payload),
+      refresh_token: await this.jwtService.signAsync(payload, { expiresIn: '7d' }),
       user: {
         id: user.id,
         email: user.email,
@@ -42,5 +44,8 @@ export class AuthUseCase {
         role: user.role,
       },
     };
+  }
+  async logout(logoutDto: LogoutDto) {
+    return this.userService.deleteRefreshToken(logoutDto.refreshToken);
   }
 }
