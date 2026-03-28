@@ -22,7 +22,9 @@ export class AuthUseCase {
   async login(loginDto: LoginDto) {
     const user = await this.userService.findByEmail(loginDto.email);
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException({
+        message: 'INVALID_CREDENTIALS',
+      });
     }
 
     const isPasswordValid = await bcrypt.compare(
@@ -30,7 +32,9 @@ export class AuthUseCase {
       user.password,
     );
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials');
+      throw new UnauthorizedException({
+        message: 'INVALID_CREDENTIALS',
+      });
     }
 
     const payload = { sub: user.id, email: user.email, role: user.role };

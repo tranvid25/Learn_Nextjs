@@ -13,7 +13,12 @@ export class UserUseCase {
       createUserDto.email,
     );
     if (existingUser) {
-      throw new ConflictException('Email already exists');
+      throw new ConflictException({
+        message: 'EMAIL_ALREADY_EXISTS',
+        errors: {
+          email: ['EMAIL_ALREADY_EXISTS'],
+        },
+      });
     }
 
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);

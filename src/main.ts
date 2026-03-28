@@ -2,10 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ApiExceptionFilter } from './common/filters/api-exception.filter';
+import { validationExceptionFactory } from './common/factories/validation-exception.factory';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
+
+  app.useGlobalFilters(new ApiExceptionFilter());
 
   // ✅ CORS — cho phép Next.js FE gọi tới NestJS BE
   app.enableCors({
@@ -18,6 +22,7 @@ async function bootstrap() {
       whitelist: true,
       forbidNonWhitelisted: true,
       transform: true,
+      exceptionFactory: validationExceptionFactory,
     }),
   );
   app.setGlobalPrefix('api');
