@@ -7,6 +7,12 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
 
+  // ✅ CORS — cho phép Next.js FE gọi tới NestJS BE
+  app.enableCors({
+    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    credentials: true, // Hỗ trợ gửi cookie
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
